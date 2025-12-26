@@ -59,3 +59,9 @@ coverage/
 *.pem
 .yarn/install-state.gz
 .next/
+
+# Static export
+out/
+
+# Large video files
+public/videos/hero-bg.MP4

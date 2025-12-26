@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FaHome, FaRoad, FaBuilding, FaLeaf, FaUsers, FaMapMarkerAlt } from 'react-icons/fa';
 
 const projectStats = [
@@ -14,24 +15,36 @@ const projectStats = [
 ];
 
 const mapProjects = [
-    { id: 'nn2', top: '40%', left: '53%', nameEn: 'Nam Ngiep 2 (NN2)', nameLa: 'ນ້ຳງຽບ 2 (NN2)', households: '1,053 HHs' },
-    { id: 'xhpp', top: '35%', left: '20%', nameEn: 'Xayaburi HPP (XHPP)', nameLa: 'ໄຊຍະບູລີ (XHPP)', households: '663 HHs' },
-    { id: 'lphpp', top: '20%', left: '30%', nameEn: 'Luang Prabang HPP (LPHPP)', nameLa: 'ຫຼວງພະບາງ (LPHPP)', households: '1,593 HHs' },
+    { id: 'nn2', top: '48%', left: '26%', nameEn: 'Nam Ngum 2 (NN2)', nameLa: 'ນ້ຳງື່ມ 2 (NN2)', households: '1,053 HHs', color: 'from-blue-400 to-blue-600', ripple: 'bg-blue-400' },
+    { id: 'xhpp', top: '40%', left: '15%', nameEn: 'Xayaburi HPP (XHPP)', nameLa: 'ໄຊຍະບູລີ (XHPP)', households: '663 HHs', color: 'from-orange-400 to-orange-600', ripple: 'bg-orange-400' },
+    { id: 'lphpp', top: '25%', left: '35%', nameEn: 'Luang Prabang HPP (LPHPP)', nameLa: 'ຫຼວງພະບາງ (LPHPP)', households: '1,593 HHs', color: 'from-purple-400 to-purple-600', ripple: 'bg-purple-400' },
 ];
 
 const FeaturedProjects = () => {
     const { t, i18n } = useTranslation();
-    const isLao = i18n.language === 'la';
+    const [mounted, setMounted] = useState(false);
     const [hoveredProject, setHoveredProject] = useState(null);
+
+    // Derive isLao from i18n
+    const isLao = i18n.language === 'la';
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setMounted(true);
+    }, []);
+
+    if (!mounted) return null;
 
     return (
         <section className="relative min-h-[80vh] overflow-hidden">
             {/* Background Image */}
             <div className="absolute inset-0">
-                <img
+                <Image
                     src="/images/projects-bg.jpg"
                     alt="Projects Background"
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-primary-900/40 to-primary-800/20" />
             </div>
@@ -119,9 +132,11 @@ const FeaturedProjects = () => {
                         {/* Laos Map Image */}
                         <div className="relative w-full aspect-square max-w-md mx-auto">
                             {/* Map Image */}
-                            <img
-                                src="/images/laos-map-new.png"
+                            <Image
+                                src="/images/laos-map-final.png"
                                 alt="Laos Map"
+                                width={500}
+                                height={500}
                                 className="w-full h-full object-contain drop-shadow-2xl"
                             />
 
@@ -139,12 +154,12 @@ const FeaturedProjects = () => {
                                     onMouseLeave={() => setHoveredProject(null)}
                                 >
                                     <Link href={`/projects/${project.id}`} className="block relative group">
-                                        {/* Orange circle with pin - matching gallery style */}
-                                        <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center cursor-pointer transition-transform group-hover:scale-125 shadow-xl">
-                                            <FaMapMarkerAlt className="text-primary-900 text-xl" />
+                                        {/* Colored circle with pin - matching map color */}
+                                        <div className={`w-10 h-10 bg-gradient-to-br ${project.color} rounded-full flex items-center justify-center cursor-pointer transition-transform group-hover:scale-125 shadow-xl`}>
+                                            <FaMapMarkerAlt className="text-white text-lg" />
                                         </div>
                                         {/* Ripple effect */}
-                                        <div className="absolute inset-0 bg-orange-400 rounded-full animate-ping opacity-30" />
+                                        <div className={`absolute inset-0 ${project.ripple} rounded-full animate-ping opacity-30`} />
 
                                         {/* Tooltip on hover */}
                                         {hoveredProject === project.id && (
